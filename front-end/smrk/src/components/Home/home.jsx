@@ -23,10 +23,10 @@ export default class Home extends Component {
     }
 
     getAudioStream = async (comment) => {        
-        const responseIBM = await fetch(`URL/v1/synthesize`, {
+        const responseIBM = await fetch(`{URL}/v1/synthesize`, {
             method: "POST",
             headers: {
-                'Authorization' : 'Basic '+ btoa('apikey:KEY'),     //provide the URL and KEY for auth
+                'Authorization' : 'Basic '+ btoa('apikey:{KEY}'),     //provide the URL and KEY for auth
                 'Content-Type': 'application/json',
                 'Accept': 'audio/wav',                
             },
