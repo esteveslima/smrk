@@ -1,5 +1,6 @@
 import express from 'express';
 import * as commentRouter from './comment';
+import * as userRouter from './user';
 
 export default () : express.Router => {
   const router = express.Router();
@@ -9,6 +10,7 @@ export default () : express.Router => {
   });
 
   commentRouter.joinToRouter(router);
+  userRouter.joinToRouter(router);
 
   router.all('*', (req, res/* , next */) : void => {
     res.status(404).json({ Status: false, message: 'Route not found' });

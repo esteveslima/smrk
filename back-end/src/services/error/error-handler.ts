@@ -41,3 +41,14 @@ const errorHandler : ErrorRequestHandler = (err, req, res, next) : void => {
 };
 
 export default errorHandler;
+
+process.on('unhandledRejection', (err : { name:string, message: string } /* , promise */) => {
+  let recomendationMessage = 'Try to restart the server';
+  if (err.name === 'SequelizeAccessDeniedError' || err.name === 'SequelizeConnectionError') {
+    recomendationMessage = 'Verify mysql credentials and run \'npm run migrate\' to setup the database before starting the server';
+  }
+  const consoleMessage = `\n Error: [${err}]. \n Recomendation: [${recomendationMessage}]. \n`;
+  errorsConsoleLogger.error(consoleMessage);
+
+  process.exit(1);
+});
