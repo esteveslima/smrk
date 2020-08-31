@@ -1,6 +1,23 @@
 # smrk
 
 ## Testando localmente
+
+Antes de tudo certifique-se que as portas 8080 e 3000 estejam livres para uso.
+
+### Teste com Docker
+
+  - Certifique-se de que tenha instalado docker e docker-compose;
+    - docker: https://docs.docker.com/engine/install/
+    - docker-compose: https://docs.docker.com/compose/install/
+    
+  - Execute o comando `docker-compose up --build --detach` na pasta `/deployments`;
+ 
+  - Após a criação dos conteineres, o front-end(porta 3000) e back-end(porta 8080) terão suas portas redirecionadas do host para acesso e o teste pode ser feito na página `http://localhost:3000`;
+
+O teste com docker já possui todas as configurações necessárias para o projeto no arquivo `/deployments/docker-compose.yml`.
+
+### Teste Manual
+
   - Certifique-se de que tenha o mysql instalado e de que seu serviço esteja funcionando;
   - Altere o valor das credenciais `DB_USER` e `DB_PASS` no arquivo `/back-end/config/.env` com as credenciais root ou de usuário cadastradas com a instalação do mysql;
     - Também é possível criar outro usuário para essas credenciais e usa-los nas credencias:
