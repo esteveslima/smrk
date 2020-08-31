@@ -1,7 +1,0 @@
-[2020-08-31T02:09:51.998Z]	401	::1 - -	20.313 ms	POST /auth/public/login HTTP/1.1
-[2020-08-31T02:10:14.551Z]	400	::1 - -	7.129 ms	POST /user/public/create HTTP/1.1
-[2020-08-31T02:10:21.498Z]	200	::1 - -	118.479 ms	POST /user/public/create HTTP/1.1
-[2020-08-31T02:10:24.021Z]	200	::1 - -	80.023 ms	POST /auth/public/login HTTP/1.1
-[2020-08-31T02:10:24.046Z]	200	::1 - -	13.105 ms	GET /user/get/1 HTTP/1.1
-[2020-08-31T02:11:03.320Z]	200	::1 - -	17.422 ms	POST /comment/create HTTP/1.1
-[2020-08-31T02:11:27.517Z]	200	::1 - -	22.854 ms	DELETE /comment/delete/1 HTTP/1.1

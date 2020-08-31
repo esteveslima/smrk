@@ -21,6 +21,7 @@
   - Para iniciar o back-end, abra o terminal em sua pasta raíz e execute:
     ```npm
       npm install
+      npm run migrate
       npm run build
       npm start
     ```

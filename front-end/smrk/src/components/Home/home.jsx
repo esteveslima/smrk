@@ -226,11 +226,24 @@ export default class Home extends Component {
                 />
             </div>
         )
+
+        const logoutButton = (
+            <div className="logoutButton" style={{position: 'absolute', top: '5%', right: '5%', width: 100, height: 50}}>
+                <Button className="buttonRegisterComment"
+                    style={{position: 'absolute', top: '10%', left: '5%', backgroundColor: '#fff', borderColor: '#333', color: '#333'}}
+                    loading={this.state.loadingRegister}
+                    onClick={() =>  this.setState({user: undefined})}
+                >
+                    Logout
+                </Button>
+            </div>
+        )
     
         const homeView = (
             <div className="homeView">
                 {registerComment}                
-                {commentsList} 
+                {commentsList}
+                {logoutButton} 
             </div>
         )
 

@@ -25,6 +25,15 @@ export default class Register extends Component {
     }
 
     register = async () => {
+        if(!(this.state.name?.length && this.state.email?.length && this.state.password?.length)){
+            message.error('Preencha o formulario')
+            return;
+        }
+        if (!/(?=^.{8,128}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(this.state.password)) {
+            message.error('Senha muito fraca, deve possuir no minimo: tamanho de 8 caracteres, uma letra maiuscula, uma letra minuscula, um numero e um caractere especial')
+            return
+        }
+
         this.setState({ loading: true })     
         
         try{
@@ -80,7 +89,7 @@ export default class Register extends Component {
                         <Button className="modalRegisterButtonRegister"
                             style={{ backgroundColor: '#fff', borderColor: '#333', color: '#333' }}
                             loading={this.state.loading}
-                            onClick={() => this.register()}
+                            onClick={() => this.register()}                            
                         >
                             Cadastrar
                         </Button>                        

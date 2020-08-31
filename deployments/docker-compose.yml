@@ -1,0 +1,46 @@
+version: '3'
+services:
+    front-end:        
+        image: smrk/front-end:v1.0
+        build:
+            context: ../front-end/smrk
+            dockerfile: Dockerfile
+        depends_on:                                                             
+            - back-end
+        environment:
+            - REACT_APP_BACK_END_HOST=localhost
+            - REACT_APP_BACK_END_PORT=8080
+            - REACT_APP_IBM_API_URL=https://api.us-south.text-to-speech.watson.cloud.ibm.com/instances/815f9e51-fea1-4c37-a1fc-b6261892f075
+            - REACT_APP_IBM_API_KEY=ruCe0r9oqfaWotJbYKLih4zKTtkEQm-gSDna10aNYVFc
+        restart: always
+        ports:
+            - 3000:3000 
+        stdin_open: true
+    back-end:        
+        image: smrk/back-end:v1.0                                   
+        build:
+            context: ../back-end
+            dockerfile: Dockerfile        
+        depends_on:                                                             
+            - mysql-database                                       
+        environment:
+            - JWT_SECRET=smrktst
+            - DB_USER=root
+            - DB_PASS=password
+            - DB_NAME=smrk
+            - DB_HOST=mysql-database
+        restart: always   
+        ports:
+            - 8080:8080                    
+    mysql-database:                                                             
+        image: mysql:5.7
+        volumes:
+            - ../mysql-storage:/var/lib/mysql                                 
+        environment:
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=password
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_DATABASE=smrk                            
+        restart: always
+        expose:
+            - '3306'                                                        
