@@ -25,5 +25,15 @@ export const checkComment : RequestHandler = async (req, res, next) : Promise<vo
   next();
 };
 
+export const verifyLogin : RequestHandler = async (req, res, next) : Promise<void> => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new ErrorResponse(ErrorResponse.errorCodes.WRONG_PARAMETERS, { email });
+  }
+
+  next();
+};
+
 // Wrapping all functions for error catching
 wrapAsync.wrapAsyncFunctions(this);

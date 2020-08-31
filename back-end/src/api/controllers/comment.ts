@@ -1,9 +1,8 @@
 import type { RequestHandler } from 'express'; // eslint-disable-line no-unused-vars
-import { WhereOptions } from 'sequelize/types';
 import * as wrapAsync from '../../services/async/wrap-async';
 import ErrorResponse from '../../services/error/structure/error-response';
 
-import Comment from '../../database/models/Comment';
+import * as Comment from '../../database/dao/commentDao';
 
 export const createComment : RequestHandler = async (req, res) : Promise<void> => {
   const { text, userId } = req.body;
@@ -17,7 +16,7 @@ export const createComment : RequestHandler = async (req, res) : Promise<void> =
 export const getComment : RequestHandler = async (req, res) : Promise<void> => {
   const { commentId } = req.params;
 
-  const comment = await Comment.findByPk(commentId, {
+  const comment = await Comment.find(commentId, {
     include: { association: 'user' },
   });
   if (!comment) throw new ErrorResponse(ErrorResponse.errorCodes.NOT_FOUND, comment);
@@ -28,7 +27,7 @@ export const getComment : RequestHandler = async (req, res) : Promise<void> => {
 export const deleteComment : RequestHandler = async (req, res) : Promise<void> => {
   const { commentId } = req.params;
 
-  const comment = await Comment.destroy({
+  const comment = await Comment.remove({
     where: { id: commentId },
     force: true,
   });

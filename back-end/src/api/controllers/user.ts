@@ -2,10 +2,10 @@ import type { RequestHandler } from 'express'; // eslint-disable-line no-unused-
 import * as wrapAsync from '../../services/async/wrap-async';
 import ErrorResponse from '../../services/error/structure/error-response';
 
-import User from '../../database/models/User';
+import * as User from '../../database/dao/userDao ';
 
 export const createUser : RequestHandler = async (req, res) : Promise<void> => {
-  const { name, password, email } = req.body;
+  const { name, email, password } = req.body;
 
   const user = await User.create({ name, password, email });
   if (!user) throw new ErrorResponse(ErrorResponse.errorCodes.NOT_FOUND, user);
@@ -16,7 +16,7 @@ export const createUser : RequestHandler = async (req, res) : Promise<void> => {
 export const getUser : RequestHandler = async (req, res) : Promise<void> => {
   const { userId } = req.params;
 
-  const user = await User.findByPk(userId, {
+  const user = await User.findById(userId, {
     include: { association: 'comments' },
   });
   if (!user) throw new ErrorResponse(ErrorResponse.errorCodes.NOT_FOUND, user);

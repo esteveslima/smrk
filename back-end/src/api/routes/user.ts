@@ -5,6 +5,6 @@ export const joinToRouter = (mainRouter: express.Router) : void => {
   const userRouter = express.Router();
   mainRouter.use('/user', userRouter);
 
-  userRouter.post('/create', user.createUser);
+  userRouter.post('/public/create', user.createUser);
   userRouter.get('/get/:userId', user.getUser);
 };

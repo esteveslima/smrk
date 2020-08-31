@@ -1,0 +1,2 @@
+{"timestamp":"2020-08-31T02:09:51.993Z","message":"    Error: [1004] from client [::1].    Result: [\"esteves.m.lima@hotmail.com\"].    Position [row,col] = [34,15] from file [/home/esteveslima/Projects/smrk/back-end/dist/api/controllers/auth.js].    Function: [exports.login]"}
+{"timestamp":"2020-08-31T02:10:14.550Z","message":"    Error: [1003] from client [::1].    Result: [\"weak password\"].    Position [row,col] = [12,15] from file [/home/esteveslima/Projects/smrk/back-end/dist/database/dao/userDao .js].    Function: [Object.exports.create]"}

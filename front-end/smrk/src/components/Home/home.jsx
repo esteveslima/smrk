@@ -1,20 +1,26 @@
+import Login from '../Login/login'
+import Cookies from 'js-cookie';
 import { Input, Button, List, message } from 'antd';
 import 'antd/dist/antd.css';
 import './home.css'
+import jwt from 'jsonwebtoken';
 import { PlayCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import React, { Component } from 'react'
 
 
 const { TextArea } = Input;
 const backendURL = `http://${process.env.REACT_APP_BACK_END_HOST}:${process.env.REACT_APP_BACK_END_PORT}${process.env.REACT_APP_BACK_END_ROUTE}`
+
 export default class Home extends Component {
+
+    #authToken = undefined;
+
     constructor(props) {
         super(props)                
 
         this.state = {
-            user: {
-                comments: []
-            },
+            
+            user: undefined,
 
             fieldRegisterComment: '',
             loadingRegister: false
@@ -22,12 +28,11 @@ export default class Home extends Component {
 
     }
 
-    async componentDidMount(/*{user}*/) {  
-        const userId = 1;  //hardcoded for testing
+    getUser = async (userId) => {  console.log(this.#authToken)
         const responseUser = await fetch(`${backendURL}/user/get/${userId}`, {
             method: "GET",
             headers: {
-                //'Authorization' : ''
+                'Authorization' : `Bearer ${this.#authToken}`,
                 'Content-Type': 'application/json',              
             }
         })
@@ -66,8 +71,7 @@ export default class Home extends Component {
     playSound = async (comment) => {        
         const responseStream = await this.getAudioStream(comment)
         if(!responseStream) return 
-        const streamReader = responseStream.body.getReader();
-        //let stream = await streamReader.read();
+        const streamReader = responseStream.body.getReader();        
         let stream = []
         streamReader.read().then(function processStream({done, value}){
             if(done){   
@@ -97,11 +101,11 @@ export default class Home extends Component {
             const responseRegistration = await fetch(`${backendURL}/comment/create`, {
                 method: "POST",
                 headers: {
-                    //'Authorization' : ''
+                    'Authorization' : `Bearer ${this.#authToken}`,
                     'Content-Type': 'application/json',              
                 },
                 body: JSON.stringify({
-                    userId: 1,    //hardcoded for testing
+                    userId: this.state.user.id,  
                     text: this.state.fieldRegisterComment
                 }),
             })
@@ -137,7 +141,7 @@ export default class Home extends Component {
             const responseDelete = await fetch(`${backendURL}/comment/delete/${deletedComment.id}`, {
                 method: "DELETE",
                 headers: {
-                    //'Authorization' : ''
+                    'Authorization' : `Bearer ${this.#authToken}`,
                     'Content-Type': 'application/json',              
                 }
             })
@@ -160,6 +164,14 @@ export default class Home extends Component {
 
 
     render() {   
+
+        const loginView = (
+            <Login onSuccess={(userToken) => {                
+                this.#authToken = userToken   
+                const token = jwt.decode(userToken);             
+                this.getUser(token.id) 
+            }} />
+        )
 
         const registerComment = (
             <div className="registerComment" style={{position: 'absolute', top: '10%', left: '5%', width: '45%', height: '70%'}}>
@@ -191,7 +203,7 @@ export default class Home extends Component {
                 <List
                     itemLayout="horizontal"
                     style={{position: 'absolute', top: '20%', right: '5%', width: '90%'}}
-                    dataSource={this.state.user.comments || []}
+                    dataSource={this.state.user?.comments || []}
                     renderItem={comment => (
                     <List.Item>
                         <div style={{width: '100%'}}>
@@ -225,7 +237,7 @@ export default class Home extends Component {
         return (
             <div id="homePage">
                 {
-                    homeView
+                    this.state.user ? homeView : loginView
                 }                
             </div>
         )

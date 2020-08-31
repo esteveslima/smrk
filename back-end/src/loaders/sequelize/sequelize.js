@@ -7,7 +7,7 @@ const Comment = require('../../database/models/Comment');
 exports.setupSequelize = () => {
   const sequelize = new Sequelize(dbConfig);
 
-  sequelize.sync();
+  sequelize.sync(/* { force: true } */);
 
   User.init(sequelize);
   Comment.init(sequelize);
