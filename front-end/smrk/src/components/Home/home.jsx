@@ -1,10 +1,10 @@
 import Login from '../Login/login'
 import Cookies from 'js-cookie';
-import { Input, Button, List, message } from 'antd';
+import { Input, Button, List, message, Modal } from 'antd';
 import 'antd/dist/antd.css';
 import './home.css'
 import jwt from 'jsonwebtoken';
-import { PlayCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlayCircleOutlined, CloseCircleOutlined, KeyOutlined, LinkOutlined } from '@ant-design/icons';
 import React, { Component } from 'react'
 
 
@@ -23,7 +23,13 @@ export default class Home extends Component {
             user: undefined,
 
             fieldRegisterComment: '',
-            loadingRegister: false
+            loadingRegister: false,
+
+            apiCredentialsModalVisible: false,
+            watsonApiUrl: process.env.REACT_APP_IBM_API_URL,            
+            watsonApiKey: process.env.REACT_APP_IBM_API_KEY,
+            inputApiUrl: '',
+            inputApiKey: ''
         }
 
     }
@@ -49,17 +55,21 @@ export default class Home extends Component {
 
     getAudioStream = async (comment) => { 
         try{
-            const responseIBM = await fetch(`${process.env.REACT_APP_IBM_API_URL}/v1/synthesize`, {
+            const responseIBM = await fetch(`${this.state.watsonApiUrl}/v1/synthesize`, {
                 method: "POST",
                 headers: {
-                    'Authorization' : 'Basic '+ btoa(`apikey:${process.env.REACT_APP_IBM_API_KEY}`),  
+                    'Authorization' : 'Basic '+ btoa(`apikey:${this.state.watsonApiKey}`),  
                     'Content-Type': 'application/json',
                     'Accept': 'audio/wav',                
                 },
                 body: JSON.stringify({                
                     text: comment
                 }),                         
-            })                  
+            })                
+            
+            if(responseIBM.status !== 200){
+                message.error('Falha na requisição para a API Watson')
+            }
                     
             return responseIBM
         }catch(e){
@@ -171,7 +181,7 @@ export default class Home extends Component {
                 const token = jwt.decode(userToken);             
                 this.getUser(token.id) 
             }} />
-        )
+        )        
 
         const registerComment = (
             <div className="registerComment" style={{position: 'absolute', top: '10%', left: '5%', width: '45%', height: '70%'}}>
@@ -228,7 +238,7 @@ export default class Home extends Component {
         )
 
         const logoutButton = (
-            <div className="logoutButton" style={{position: 'absolute', top: '5%', right: '5%', width: 100, height: 50}}>
+            <div className="logoutButton" style={{position: 'absolute', top: '5%', left: '5%', width: 100, height: 50}}>
                 <Button className="buttonRegisterComment"
                     style={{position: 'absolute', top: '10%', left: '5%', backgroundColor: '#fff', borderColor: '#333', color: '#333'}}
                     loading={this.state.loadingRegister}
@@ -238,12 +248,77 @@ export default class Home extends Component {
                 </Button>
             </div>
         )
+
+        const credentialsButton = (
+            <div className="credentialsButton" style={{position: 'absolute', top: '5%', right: '5%', width: 300, height: 50}}>
+                <Button className="buttonCredentials"
+                    style={{position: 'absolute', top: '10%', left: '5%', backgroundColor: '#fff', borderColor: '#333', color: '#333'}}
+                    loading={this.state.loadingRegister}
+                    onClick={() =>  this.setState({apiCredentialsModalVisible: true})}
+                >
+                    Problemas para reproduzir o som?
+                </Button>
+            </div>
+        )
+
+        const apiCredentialsModal = (
+            <Modal className="modalApi"
+                title="Mudar Credenciais da API Watson"
+                width={450}
+                style={{ top: '1%' }}
+                visible={this.state.apiCredentialsModalVisible}
+                closable={false}
+                footer={[
+                    <div className="modalApiFooter" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Button className="modalLoginButtonCancel"
+                            style={{ backgroundColor: '#fff', borderColor: '#333', color: '#333' }}
+                            onClick={() => this.setState({ apiCredentialsModalVisible: false })}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button className="modalApiButtonUpdate" type="primary"
+                            style={{ backgroundColor: '#333', borderColor: '#333' }}                            
+                            onClick={() => {
+                                if(!(this.state.inputApiUrl?.length && this.state.inputApiKey?.length)){
+                                    message.error('Preencha o formulario')
+                                    return;
+                                }
+                                this.setState({
+                                    watsonApiUrl: this.state.inputApiUrl,
+                                    watsonApiKey: this.state.inputApiKey
+                                }, () => {
+                                    this.setState({ apiCredentialsModalVisible: false })
+                                    message.success('Credenciais atualizadas com sucesso')
+                                })
+                            }}
+                        >
+                            Atualizar Credenciais
+                        </Button>
+                    </div>
+                ]}
+            >
+                <div className="modalApiBody">
+                    <div style={{marginBottom: 10}}>
+                        <span>Mude as credenciais do serviço da IBM:</span>
+                        <a target="_blank" rel="noopener noreferrer" href="https://www.ibm.com/cloud/watson-text-to-speech">Watson Speech to Text</a>
+                    </div>                    
+                    <Input size="large" placeholder="Url" prefix={<LinkOutlined />}
+                        onChange={(value) => this.setState({ inputApiUrl: value.target.value })}
+                    />
+                    <Input.Password size="large" placeholder="Key" prefix={<KeyOutlined />}
+                        onChange={(value) => this.setState({ inputApiKey: value.target.value })}
+                    />
+                </div>
+            </Modal>
+        )
     
         const homeView = (
             <div className="homeView">
                 {registerComment}                
                 {commentsList}
                 {logoutButton} 
+                {credentialsButton}
+                {apiCredentialsModal}
             </div>
         )
 
