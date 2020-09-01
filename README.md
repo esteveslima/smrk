@@ -1,5 +1,11 @@
 # smrk
 
+Integração com o serviço Watson Text to Speech da IBM para reprodução no front-end de textos ou comentários registrados.
+
+Este projeto foi construído sem features de segurança sendo apenas para fins de demonstração. Para ambiente de produção as credenciais da api watson devem ser removidas do front-end e armazenadas no back-end, que deve ser refatorado para também servir como um tipo de proxy intermediário para a api da IBM.
+
+Alguns serviços e features do back-end foram simplificados para agilizar o desenvolvimento.
+
 ## Testando localmente
 
 Antes de tudo certifique-se que as portas 8080 e 3000 estejam livres para uso.
